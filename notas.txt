@@ -1,0 +1,248 @@
+É fetchall() (com dois l), não fetchal().
+
+  self.cursor.fetchall() serve para:
+
+  Buscar TODOS os resultados de uma
+  consulta SQL que você executou.
+
+  Exemplo:
+  # 1. Executa a consulta
+  self.cursor.execute("SELECT * FROM 
+  usuarios")
+
+  # 2. Busca TODOS os resultados
+  resultados = self.cursor.fetchall()
+
+  # resultados vai ser uma lista com todas 
+  as linhas:
+  # [('João', 25), ('Maria', 30), ('Pedro',
+   22)]
+
+  Outras variações:
+  - fetchone() - Busca apenas 1 linha
+  - fetchmany(5) - Busca 5 linhas
+  - fetchall() - Busca todas as linhas
+
+  É como:
+  - execute() = "Faça a pergunta ao banco"
+  - fetchall() = "Me dê todas as respostas"
+
+  ______________________________________________________________________________________
+
+
+  Analisando o meu cod na função connect, o 
+  que significa: self.cursor     = 
+  self.connection.cursor()
+  ⎿ ⧉ Selected 1 lines from 
+    app/utils/database_connection.py in Visual 
+    Studio Code
+
+⏺ Read(app/utils/database_connection.py)
+  ⎿  Read 25 lines (ctrl+r to expand)
+
+⏺ Read(app/utils/database_connection.py)
+  ⎿  Read 0 lines 
+
+⏺ self.cursor = self.connection.cursor()
+  cria um cursor a partir da conexão com o
+  banco de dados.
+
+  O cursor é um objeto que permite:
+
+  - Executar comandos SQL (SELECT, INSERT,
+  UPDATE, DELETE)
+  - Navegar pelos resultados de consultas
+  - Controlar transações
+
+  É como um "ponteiro" que permite
+  interagir com o banco. Exemplo de uso:
+
+  # Executar query
+  self.cursor.execute("SELECT * FROM 
+  usuarios")
+
+  # Buscar resultados
+  resultados = self.cursor.fetchall()
+
+  Sem o cursor, você não consegue executar
+  comandos SQL no banco de dados.
+
+> Mas ele não é uma varivel que começa vazia 
+  ? Poderia ser qualquer nome ? Digo pois foi
+   criado do nada, vazio para mim serviria 
+  somente self.connection, digo mesmo para 
+  entender
+
+⏺ Exato! Você está certo. Vou explicar:
+
+  1. É uma variável que começa vazia:
+  def __init__(self):
+      self.cursor = None  # Começa 
+  vazia/None
+
+  2. Poderia ser qualquer nome:
+  # Todos estes nomes funcionariam igual:
+  self.cursor = self.connection.cursor()
+  self.ponteiro = self.connection.cursor()
+  self.executor = self.connection.cursor()
+  self.db_cursor = self.connection.cursor()
+
+  3. Por que não só self.connection?
+
+  A connection e o cursor têm funções 
+  diferentes:
+
+  - connection: Gerencia a conexão
+  (conectar, desconectar, commit, rollback)
+  - cursor: Executa os comandos SQL
+
+  # connection faz isso:
+  self.connection.commit()    # Salva 
+  mudanças
+  self.connection.rollback()  # Desfaz 
+  mudanças
+  self.connection.close()     # Fecha 
+  conexão
+
+  # cursor faz isso:
+  self.cursor.execute("SELECT * FROM 
+  tabela")  # Executa SQL
+  self.cursor.fetchall()
+      # Busca resultados
+
+  É como ter uma porta (connection) e uma
+  chave (cursor) - você precisa dos dois
+  para trabalhar com o banco.
+
+> Então meio que o cursor() ali é diferente 
+  da variavel acima criada que começa vazio, 
+  na verdade o curso() é uma função que 
+  executa um comando no bando de dados
+
+⏺ Exato! Você entendeu perfeitamente:
+
+  1. self.cursor (variável):
+  - É uma variável que você criou
+  - Começa vazia/None no __init__
+  - Poderia ter qualquer nome
+
+  2. .cursor() (função/método):
+  - É uma função do psycopg2
+  - Retorna um objeto cursor
+  - Este objeto tem métodos como
+  .execute(), .fetchall(), etc.
+
+  # Variável vazia que você criou
+  self.cursor = None
+
+  # Depois você chama a FUNÇÃO cursor() e 
+  guarda o resultado na variável
+  self.cursor = self.connection.cursor()  #
+   cursor() é uma função!
+
+  É como:
+  # Você cria uma caixa vazia
+  minha_caixa = None
+
+  # Depois pede para a fábrica fazer uma 
+  caixa e coloca na sua variável
+  minha_caixa = fabrica.fazer_caixa()  # 
+  fazer_caixa() é uma função
+
+  A confusão é que o nome da variável
+  (cursor) é igual ao nome da função
+  (.cursor()), mas são coisas diferentes!
+
+> Nesse caso a partir disso: self.cursor = 
+  self.connection.cursor()\
+  \
+  Quando eu chamar self.curso eu estarei 
+  chamando self.connection.cursor()
+
+⏺ Não exatamente!
+
+  Quando você faz:
+  self.cursor = self.connection.cursor()
+
+  O que acontece é:
+
+  1. self.connection.cursor() - A função é
+  executada e retorna um objeto cursor
+  2. self.cursor = - Esse objeto cursor é
+  armazenado na variável self.cursor
+
+  Depois disso:
+  - self.cursor é o objeto cursor (não a
+  função)
+  - self.connection.cursor() continua sendo
+   a função
+
+  # Depois da linha self.cursor = 
+  self.connection.cursor()
+
+  # Isso chama métodos do objeto cursor:
+  self.cursor.execute("SELECT * FROM 
+  tabela")  # ✅
+  self.cursor.fetchall()
+      # ✅
+
+  # Isso chamaria a função novamente 
+  (criaria outro cursor):
+  self.connection.cursor()
+      # ✅ mas desnecessário
+
+  É como:
+  # Você pede uma pizza e guarda ela
+  minha_pizza = pizzaria.fazer_pizza()
+
+  # Agora minha_pizza É a pizza (não a 
+  pizzaria)
+  minha_pizza.comer()  # ✅
+  # pizzaria.fazer_pizza() ainda existe 
+  para fazer outra pizza
+
+
+
+  ______________________________________________________________________________________
+
+
+
+
+  > def __enter__(self):
+          self.connect()
+          return self
+
+      def __exit__(self, exc_type, exc_val, exc_tb):
+          if exc_type is not None:  # Se ocorreu uma 
+  exceção
+              self.rollback()
+          self.close()\
+  \
+  Para que esse cod de cima seria util?
+  ⎿ ⧉ Selected 8 lines from app/Utils/database_connection.py 
+    in Visual Studio Code
+
+⏺ Esse código implementa o Context Manager Protocol do
+  Python, permitindo que a classe seja usada com a
+  declaração with.
+
+  É útil para:
+
+  1. Gerenciamento automático de recursos: Garante que a
+  conexão com o banco seja sempre fechada, mesmo se
+  ocorrer uma exceção
+  2. Controle de transações: Faz rollback automático
+  quando há erros e fecha a conexão adequadamente
+  3. Código mais limpo: Elimina a necessidade de lembrar
+  de fechar conexões manualmente
+
+  Exemplo de uso:
+  with DatabaseConnection() as db:
+      # Faz operações no banco
+      db.execute("INSERT INTO users ...")
+      # Se der erro aqui, faz rollback automaticamente
+      # Conexão é fechada automaticamente no final
+
+  É uma prática recomendada para qualquer recurso que
+  precisa ser liberado (conexões de banco, arquivos,
+  etc).

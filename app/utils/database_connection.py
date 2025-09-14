@@ -94,13 +94,13 @@ class DatabaseConnection:
             
             
     def __enter__(self):
-        self.connect
+        self.connect()
         return self
     
     
-    def __exit__(self, exc_type):
+    def __exit__(self, exc_type, exc_value, traceback):
         if exc_type is not None:
-            self.rollback
+            self.rollback()
         self.close()
         
             

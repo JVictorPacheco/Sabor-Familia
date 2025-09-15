@@ -13,6 +13,11 @@ DB_CONFIG_CONNECT = {
 
 
 def get_db_connection():
+    """
+    Cria e retorna uma conexão ativa com o banco de dados PostgreSQL.
+    
+    Returns: DatabaseConnection: Instância conectada ao banco biblego
+    """
     db_connection = DatabaseConnection(**DB_CONFIG_CONNECT)
     db_connection.connect()
     return db_connection

@@ -33,8 +33,8 @@ class DatabaseConnection:
         Estabelece a conexão com o banco de dados.
         """
         try:
-            self.connection = psycopg2.connect(**self.connection_parameters)
-            self.cursor     = self.connection.cursor()
+            self.connection = psycopg2.connect(**self.connection_parameters) #conexao
+            self.cursor     = self.connection.cursor() # curso que faz eu executo ações no banco
             print('Conexão bem Sucedida')
         except Exception as e:
             print(f'Erro ao conectar no banco de dados {e}')
@@ -99,6 +99,7 @@ class DatabaseConnection:
     
     
     def __exit__(self, exc_type, exc_value, traceback):
+        #Mais para frente eu posso implementar os demais parametros exc_value, traceback para pegar logs mais robustos
         if exc_type is not None:
             self.rollback()
         self.close()

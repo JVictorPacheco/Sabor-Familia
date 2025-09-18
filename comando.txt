@@ -1,0 +1,1 @@
+pip freeze > requirements.txt -- Instalar o que estiver dentro do arquivo requirements
